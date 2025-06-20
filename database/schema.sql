@@ -69,4 +69,119 @@ CREATE INDEX IF NOT EXISTS reports_disaster_idx ON reports (disaster_id);
 CREATE INDEX IF NOT EXISTS reports_user_idx ON reports (user_id);
 CREATE INDEX IF NOT EXISTS reports_status_idx ON reports (verification_status);
 
-CREATE INDEX IF NOT EXISTS cache_expires_idx ON cache (expires_at); 
+CREATE INDEX IF NOT EXISTS cache_expires_idx ON cache (expires_at);
+
+-- Create function for finding nearby resources
+CREATE OR REPLACE FUNCTION find_nearby_resources(
+    lat DOUBLE PRECISION,
+    lng DOUBLE PRECISION,
+    radius_meters INTEGER DEFAULT 10000
+)
+RETURNS TABLE (
+    id UUID,
+    name TEXT,
+    location_name TEXT,
+    type TEXT,
+    distance_meters DOUBLE PRECISION
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT 
+        r.id,
+        r.name,
+        r.location_name,
+        r.type,
+        ST_Distance(
+            r.location::geography,
+            ST_SetSRID(ST_Point(lng, lat), 4326)::geography
+        ) as distance_meters
+    FROM resources r
+    WHERE ST_DWithin(
+        r.location::geography,
+        ST_SetSRID(ST_Point(lng, lat), 4326)::geography,
+        radius_meters
+    )
+    ORDER BY distance_meters;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Create function for finding disasters in area
+CREATE OR REPLACE FUNCTION find_disasters_in_area(
+    lat DOUBLE PRECISION,
+    lng DOUBLE PRECISION,
+    radius_meters INTEGER DEFAULT 50000
+)
+RETURNS TABLE (
+    id UUID,
+    title TEXT,
+    location_name TEXT,
+    distance_meters DOUBLE PRECISION
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT 
+        d.id,
+        d.title,
+        d.location_name,
+        ST_Distance(
+            d.location::geography,
+            ST_SetSRID(ST_Point(lng, lat), 4326)::geography
+        ) as distance_meters
+    FROM disasters d
+    WHERE ST_DWithin(
+        d.location::geography,
+        ST_SetSRID(ST_Point(lng, lat), 4326)::geography,
+        radius_meters
+    )
+    ORDER BY distance_meters;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Insert sample data
+INSERT INTO disasters (title, location_name, description, tags, owner_id, location) VALUES
+(
+    'NYC Flood',
+    'Manhattan, NYC',
+    'Heavy flooding in Manhattan affecting Lower East Side',
+    ARRAY['flood', 'urgent'],
+    'netrunnerX',
+    ST_SetSRID(ST_Point(-74.0060, 40.7128), 4326)
+),
+(
+    'California Wildfire',
+    'Los Angeles, CA',
+    'Major wildfire spreading rapidly in LA County',
+    ARRAY['wildfire', 'emergency'],
+    'reliefAdmin',
+    ST_SetSRID(ST_Point(-118.2437, 34.0522), 4326)
+);
+
+INSERT INTO resources (disaster_id, name, location_name, type, location) VALUES
+(
+    (SELECT id FROM disasters WHERE title = 'NYC Flood' LIMIT 1),
+    'Red Cross Shelter',
+    'Lower East Side, NYC',
+    'shelter',
+    ST_SetSRID(ST_Point(-73.9900, 40.7150), 4326)
+),
+(
+    (SELECT id FROM disasters WHERE title = 'NYC Flood' LIMIT 1),
+    'Emergency Food Distribution',
+    'Chinatown, NYC',
+    'food',
+    ST_SetSRID(ST_Point(-73.9970, 40.7150), 4326)
+);
+
+INSERT INTO reports (disaster_id, user_id, content, verification_status) VALUES
+(
+    (SELECT id FROM disasters WHERE title = 'NYC Flood' LIMIT 1),
+    'citizen1',
+    'Need food in Lower East Side',
+    'pending'
+),
+(
+    (SELECT id FROM disasters WHERE title = 'NYC Flood' LIMIT 1),
+    'citizen2',
+    'Water level rising rapidly on Delancey Street',
+    'verified'
+); 

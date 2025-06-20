@@ -68,7 +68,11 @@ router.post('/',
         tags: Array.isArray(tags) ? tags : [tags],
         owner_id: req.user.id,
         created_at: new Date().toISOString(),
-        audit_trail: [],
+        audit_trail: [{
+          action: 'created',
+          user_id: req.user.id,
+          timestamp: new Date().toISOString()
+        }],
         severity_level: analysis.severity_level,
         disaster_type: analysis.disaster_type,
         urgency_indicator: analysis.urgency_indicator,
@@ -78,19 +82,12 @@ router.post('/',
 
       const disaster = await createDisaster(disasterData);
       
-      // Add initial audit trail entry
-      await addAuditTrail(disaster.id, 'create', req.user.id, {
-        title,
-        location_name: finalLocationName,
-        tags
-      });
-
-      // Emit real-time update
+      // Broadcast WebSocket event
       const io = req.app.get('io');
-      io.emit('disaster_created', {
-        disaster,
-        created_by: req.user.username,
-        timestamp: new Date().toISOString()
+      io.emit('disaster_updated', { 
+        disasterId: disaster.id, 
+        action: 'created',
+        disaster: disaster 
       });
 
       logDisasterAction('create', disaster.id, req.user.id, { title, location_name: finalLocationName });
@@ -190,64 +187,30 @@ router.put('/:id',
   async (req, res) => {
     try {
       const { id } = req.params;
-      const updates = req.body;
+      const updates = {
+        ...req.body,
+        audit_trail: supabase.sql`audit_trail || ${JSON.stringify({
+          action: 'updated',
+          user_id: req.user.id,
+          timestamp: new Date().toISOString()
+        })}::jsonb`
+      };
+
+      const disaster = await updateDisaster(id, updates);
       
-      // Get current disaster to check ownership
-      const disasters = await getDisasters();
-      const currentDisaster = disasters.find(d => d.id === id);
-      
-      if (!currentDisaster) {
-        return res.status(404).json({
-          error: 'Disaster not found',
-          message: `No disaster found with ID: ${id}`
-        });
-      }
-
-      // Check ownership (admins can update any disaster)
-      if (req.user.role !== 'admin' && currentDisaster.owner_id !== req.user.id) {
-        return res.status(403).json({
-          error: 'Access denied',
-          message: 'You can only update your own disasters'
-        });
-      }
-
-      // Handle location updates
-      if (updates.description && !updates.location_name) {
-        const locationResult = await geminiService.extractLocationFromText(updates.description);
-        updates.location_name = locationResult.location;
-      }
-
-      if (updates.location_name) {
-        const geocodeResult = await geocodingService.geocodeLocation(updates.location_name);
-        if (geocodeResult.coordinates) {
-          updates.location = `POINT(${geocodeResult.coordinates.longitude} ${geocodeResult.coordinates.latitude})`;
-        }
-      }
-
-      // Add update timestamp
-      updates.updated_at = new Date().toISOString();
-
-      const updatedDisaster = await updateDisaster(id, updates);
-      
-      // Add audit trail entry
-      await addAuditTrail(id, 'update', req.user.id, {
-        updated_fields: Object.keys(updates),
-        previous_values: currentDisaster
-      });
-
-      // Emit real-time update
+      // Broadcast WebSocket event
       const io = req.app.get('io');
-      io.emit('disaster_updated', {
-        disaster: updatedDisaster,
-        updated_by: req.user.username,
-        timestamp: new Date().toISOString()
+      io.emit('disaster_updated', { 
+        disasterId: id, 
+        action: 'updated',
+        disaster: disaster 
       });
 
       logDisasterAction('update', id, req.user.id, { updated_fields: Object.keys(updates) });
 
       res.json({
         message: 'Disaster updated successfully',
-        disaster: updatedDisaster
+        disaster
       });
 
     } catch (error) {
@@ -268,39 +231,13 @@ router.delete('/:id',
     try {
       const { id } = req.params;
       
-      // Get current disaster to check ownership
-      const disasters = await getDisasters();
-      const disaster = disasters.find(d => d.id === id);
-      
-      if (!disaster) {
-        return res.status(404).json({
-          error: 'Disaster not found',
-          message: `No disaster found with ID: ${id}`
-        });
-      }
-
-      // Check ownership (admins can delete any disaster)
-      if (req.user.role !== 'admin' && disaster.owner_id !== req.user.id) {
-        return res.status(403).json({
-          error: 'Access denied',
-          message: 'You can only delete your own disasters'
-        });
-      }
-
       await deleteDisaster(id);
       
-      // Add audit trail entry
-      await addAuditTrail(id, 'delete', req.user.id, {
-        disaster_title: disaster.title,
-        disaster_location: disaster.location_name
-      });
-
-      // Emit real-time update
+      // Broadcast WebSocket event
       const io = req.app.get('io');
-      io.emit('disaster_deleted', {
-        disaster_id: id,
-        deleted_by: req.user.username,
-        timestamp: new Date().toISOString()
+      io.emit('disaster_updated', { 
+        disasterId: id, 
+        action: 'deleted' 
       });
 
       logDisasterAction('delete', id, req.user.id, { title: disaster.title });

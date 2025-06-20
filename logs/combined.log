@@ -72,3 +72,51 @@
 {"level":"info","message":"Client connected: mciiiOCr6kE9E0CZAAAL","service":"disaster-response-platform","timestamp":"2025-06-20 11:04:02"}
 {"level":"info","message":"User authenticated: fieldWorker (contributor)","service":"disaster-response-platform","timestamp":"2025-06-20 11:04:10"}
 {"action":"list_disasters","ip":"::1","level":"info","message":"Audit log","method":"GET","path":"/","role":"contributor","service":"disaster-response-platform","status_code":200,"timestamp":"2025-06-20 11:04:10","user_id":"fieldWorker","username":"fieldWorker"}
+{"level":"info","message":"Client disconnected: mciiiOCr6kE9E0CZAAAL","service":"disaster-response-platform","timestamp":"2025-06-20 11:32:00"}
+{"level":"info","message":"Client disconnected: 6xsOzjo8F0e2r7lxAAAC","service":"disaster-response-platform","timestamp":"2025-06-20 11:32:01"}
+{"level":"info","message":"Client connected: ykmO8c5fjCzhjEtsAAAN","service":"disaster-response-platform","timestamp":"2025-06-20 11:32:01"}
+{"level":"info","message":"Client connected: NYvwIo5ooyD2BJIoAAAP","service":"disaster-response-platform","timestamp":"2025-06-20 11:32:02"}
+{"level":"info","message":"Client disconnected: ykmO8c5fjCzhjEtsAAAN","service":"disaster-response-platform","timestamp":"2025-06-20 12:31:37"}
+{"level":"info","message":"Client disconnected: NYvwIo5ooyD2BJIoAAAP","service":"disaster-response-platform","timestamp":"2025-06-20 12:31:37"}
+{"level":"info","message":"Client connected: 0lp-AHz-TbpEpX3XAAAR","service":"disaster-response-platform","timestamp":"2025-06-20 12:31:39"}
+{"level":"info","message":"Client connected: Mkuw5-il6Uu9myPmAAAT","service":"disaster-response-platform","timestamp":"2025-06-20 12:31:39"}
+{"level":"info","message":"Client disconnected: 0lp-AHz-TbpEpX3XAAAR","service":"disaster-response-platform","timestamp":"2025-06-20 12:31:42"}
+{"level":"info","message":"Client disconnected: Mkuw5-il6Uu9myPmAAAT","service":"disaster-response-platform","timestamp":"2025-06-20 16:31:37"}
+{"level":"info","message":"Client connected: 1SGPqEojYvUwYiwzAAAW","service":"disaster-response-platform","timestamp":"2025-06-20 23:25:44"}
+{"level":"info","message":"Client connected: aY7RloEkyFN1lV0XAAAX","service":"disaster-response-platform","timestamp":"2025-06-20 23:25:44"}
+{"level":"warn","message":"Gemini API key not set. Running in mock mode.","service":"disaster-response-platform","timestamp":"2025-06-20 23:39:07"}
+{"level":"warn","message":"To use real Gemini API, set GEMINI_API_KEY in your .env file","service":"disaster-response-platform","timestamp":"2025-06-20 23:39:07"}
+{"level":"warn","message":"No geocoding API keys set. Will use OpenStreetMap (free) as fallback.","service":"disaster-response-platform","timestamp":"2025-06-20 23:39:07"}
+{"level":"warn","message":"To use Google Maps or Mapbox, set GOOGLE_MAPS_API_KEY or MAPBOX_ACCESS_TOKEN in your .env file","service":"disaster-response-platform","timestamp":"2025-06-20 23:39:07"}
+{"level":"warn","message":"Supabase environment variables not set. Running in mock mode.","service":"disaster-response-platform","timestamp":"2025-06-20 23:39:08"}
+{"level":"warn","message":"To use real Supabase, set SUPABASE_URL and SUPABASE_ANON_KEY in your .env file","service":"disaster-response-platform","timestamp":"2025-06-20 23:39:08"}
+{"level":"info","message":"Mock Supabase client initialized for testing","service":"disaster-response-platform","timestamp":"2025-06-20 23:39:08"}
+{"level":"info","message":"🚀 Disaster Response Platform server running on port 5000","service":"disaster-response-platform","timestamp":"2025-06-20 23:39:08"}
+{"level":"info","message":"📡 WebSocket server ready for real-time updates","service":"disaster-response-platform","timestamp":"2025-06-20 23:39:08"}
+{"level":"info","message":"🌍 Environment: undefined","service":"disaster-response-platform","timestamp":"2025-06-20 23:39:08"}
+{"level":"info","message":"Client connected: LM_rrrOi4mic-tvdAAAB","service":"disaster-response-platform","timestamp":"2025-06-20 23:39:11"}
+{"level":"info","message":"Client connected: jPjgfBnagXny90DgAAAD","service":"disaster-response-platform","timestamp":"2025-06-20 23:39:14"}
+{"level":"warn","message":"Gemini API key not set. Running in mock mode.","service":"disaster-response-platform","timestamp":"2025-06-20 23:43:03"}
+{"level":"warn","message":"To use real Gemini API, set GEMINI_API_KEY in your .env file","service":"disaster-response-platform","timestamp":"2025-06-20 23:43:03"}
+{"level":"warn","message":"No geocoding API keys set. Will use OpenStreetMap (free) as fallback.","service":"disaster-response-platform","timestamp":"2025-06-20 23:43:03"}
+{"level":"warn","message":"To use Google Maps or Mapbox, set GOOGLE_MAPS_API_KEY or MAPBOX_ACCESS_TOKEN in your .env file","service":"disaster-response-platform","timestamp":"2025-06-20 23:43:03"}
+{"level":"warn","message":"Supabase environment variables not set. Running in mock mode.","service":"disaster-response-platform","timestamp":"2025-06-20 23:43:04"}
+{"level":"warn","message":"To use real Supabase, set SUPABASE_URL and SUPABASE_ANON_KEY in your .env file","service":"disaster-response-platform","timestamp":"2025-06-20 23:43:04"}
+{"level":"info","message":"Mock Supabase client initialized for testing","service":"disaster-response-platform","timestamp":"2025-06-20 23:43:04"}
+{"level":"info","message":"🚀 Disaster Response Platform server running on port 5000","service":"disaster-response-platform","timestamp":"2025-06-20 23:43:04"}
+{"level":"info","message":"📡 WebSocket server ready for real-time updates","service":"disaster-response-platform","timestamp":"2025-06-20 23:43:04"}
+{"level":"info","message":"🌍 Environment: undefined","service":"disaster-response-platform","timestamp":"2025-06-20 23:43:04"}
+{"level":"info","message":"Client connected: BXmuSt2Fh7dvt7LGAAAB","service":"disaster-response-platform","timestamp":"2025-06-20 23:43:05"}
+{"level":"info","message":"Client connected: 3wBFY0g3ioutU3u-AAAD","service":"disaster-response-platform","timestamp":"2025-06-20 23:43:07"}
+{"level":"warn","message":"Gemini API key not set. Running in mock mode.","service":"disaster-response-platform","timestamp":"2025-06-21 00:53:13"}
+{"level":"warn","message":"To use real Gemini API, set GEMINI_API_KEY in your .env file","service":"disaster-response-platform","timestamp":"2025-06-21 00:53:13"}
+{"level":"warn","message":"No geocoding API keys set. Will use OpenStreetMap (free) as fallback.","service":"disaster-response-platform","timestamp":"2025-06-21 00:53:13"}
+{"level":"warn","message":"To use Google Maps or Mapbox, set GOOGLE_MAPS_API_KEY or MAPBOX_ACCESS_TOKEN in your .env file","service":"disaster-response-platform","timestamp":"2025-06-21 00:53:13"}
+{"level":"warn","message":"Supabase environment variables not set. Running in mock mode.","service":"disaster-response-platform","timestamp":"2025-06-21 00:53:14"}
+{"level":"warn","message":"To use real Supabase, set SUPABASE_URL and SUPABASE_ANON_KEY in your .env file","service":"disaster-response-platform","timestamp":"2025-06-21 00:53:14"}
+{"level":"info","message":"Mock Supabase client initialized for testing","service":"disaster-response-platform","timestamp":"2025-06-21 00:53:14"}
+{"level":"info","message":"🚀 Disaster Response Platform server running on port 5000","service":"disaster-response-platform","timestamp":"2025-06-21 00:53:14"}
+{"level":"info","message":"📡 WebSocket server ready for real-time updates","service":"disaster-response-platform","timestamp":"2025-06-21 00:53:14"}
+{"level":"info","message":"🌍 Environment: undefined","service":"disaster-response-platform","timestamp":"2025-06-21 00:53:14"}
+{"level":"info","message":"Client connected: tI1AMYIgGlEEpv1EAAAB","service":"disaster-response-platform","timestamp":"2025-06-21 00:53:16"}
+{"level":"info","message":"Client connected: 05Y5vwWILEC_dWVuAAAD","service":"disaster-response-platform","timestamp":"2025-06-21 00:53:18"}

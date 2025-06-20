@@ -20,4 +20,5 @@ services:
       - key: GOOGLE_MAPS_API_KEY
         sync: false
       - key: MAPBOX_ACCESS_TOKEN
-        sync: false 
+        sync: false
+    healthCheckPath: /api/health 

@@ -35,11 +35,11 @@ router.get('/:disasterId',
         filteredReports = reports.filter(report => report.priority === priority);
       }
 
-      // Emit real-time update for new reports
+      // Broadcast WebSocket event for new social media data
       const io = req.app.get('io');
-      io.to(`disaster-${disasterId}`).emit('social_media_updated', {
-        disaster_id: disasterId,
-        reports: filteredReports,
+      io.emit('social_media_updated', { 
+        disasterId, 
+        posts: filteredReports,
         timestamp: new Date().toISOString()
       });
 

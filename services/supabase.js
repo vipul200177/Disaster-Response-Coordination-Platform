@@ -10,38 +10,24 @@ const initializeSupabase = () => {
       logger.warn('Supabase environment variables not set. Running in mock mode.');
       logger.warn('To use real Supabase, set SUPABASE_URL and SUPABASE_ANON_KEY in your .env file');
       
-      // Create a mock client for testing
+      // Create a comprehensive mock client as fallback
+      const createMockQuery = () => ({
+        eq: () => createMockQuery(),
+        contains: () => createMockQuery(),
+        order: () => createMockQuery(),
+        single: () => ({ data: null, error: null }),
+        select: () => createMockQuery(),
+        insert: () => createMockQuery(),
+        update: () => createMockQuery(),
+        delete: () => createMockQuery(),
+        upsert: () => ({ error: null }),
+        rpc: () => ({ data: [], error: null })
+      });
+
       supabase = {
-        from: () => ({
-          select: () => ({
-            eq: () => ({
-              single: () => ({ data: null, error: null }),
-              order: () => ({ data: [], error: null })
-            }),
-            contains: () => ({
-              order: () => ({ data: [], error: null })
-            }),
-            order: () => ({ data: [], error: null }),
-            single: () => ({ data: null, error: null }),
-            insert: () => ({
-              select: () => ({
-                single: () => ({ data: null, error: null })
-              })
-            }),
-            update: () => ({
-              eq: () => ({
-                select: () => ({
-                  single: () => ({ data: null, error: null })
-                })
-              })
-            }),
-            delete: () => ({ error: null }),
-            upsert: () => ({ data: null, error: null }),
-            rpc: () => ({ data: null, error: null })
-          }),
-          rpc: () => ({ data: null, error: null })
-        }),
-        rpc: () => ({ data: null, error: null })
+        from: () => createMockQuery(),
+        rpc: () => ({ data: [], error: null }),
+        sql: (template) => template
       };
       
       logger.info('Mock Supabase client initialized for testing');
@@ -57,38 +43,24 @@ const initializeSupabase = () => {
     logger.error('Failed to initialize Supabase client:', error);
     logger.warn('Falling back to mock mode for testing');
     
-    // Create a mock client as fallback
+    // Create a comprehensive mock client as fallback
+    const createMockQuery = () => ({
+      eq: () => createMockQuery(),
+      contains: () => createMockQuery(),
+      order: () => createMockQuery(),
+      single: () => ({ data: null, error: null }),
+      select: () => createMockQuery(),
+      insert: () => createMockQuery(),
+      update: () => createMockQuery(),
+      delete: () => createMockQuery(),
+      upsert: () => ({ error: null }),
+      rpc: () => ({ data: [], error: null })
+    });
+
     supabase = {
-      from: () => ({
-        select: () => ({
-          eq: () => ({
-            single: () => ({ data: null, error: null }),
-            order: () => ({ data: [], error: null })
-          }),
-          contains: () => ({
-            order: () => ({ data: [], error: null })
-          }),
-          order: () => ({ data: [], error: null }),
-          single: () => ({ data: null, error: null }),
-          insert: () => ({
-            select: () => ({
-              single: () => ({ data: null, error: null })
-            })
-          }),
-          update: () => ({
-            eq: () => ({
-              select: () => ({
-                single: () => ({ data: null, error: null })
-              })
-            })
-          }),
-          delete: () => ({
-            eq: () => ({ error: null })
-          }),
-          upsert: () => ({ error: null })
-        }),
-        rpc: () => ({ data: [], error: null })
-      })
+      from: () => createMockQuery(),
+      rpc: () => ({ data: [], error: null }),
+      sql: (template) => template
     };
   }
 };
@@ -96,6 +68,11 @@ const initializeSupabase = () => {
 // Cache management functions
 const getCachedData = async (key) => {
   try {
+    // For mock client, return null
+    if (!supabase || !supabase.from) {
+      return null;
+    }
+
     const { data, error } = await supabase
       .from('cache')
       .select('*')
@@ -122,6 +99,11 @@ const getCachedData = async (key) => {
 
 const setCachedData = async (key, value, ttlSeconds = 3600) => {
   try {
+    // For mock client, return true
+    if (!supabase || !supabase.from) {
+      return true;
+    }
+
     const expiresAt = new Date(Date.now() + ttlSeconds * 1000);
     
     const { error } = await supabase
@@ -174,10 +156,21 @@ const getDisasters = async (filters = {}) => {
       query = query.eq('owner_id', filters.owner_id);
     }
 
-    const { data, error } = await query.order('created_at', { ascending: false });
+    // Handle both real and mock clients
+    const result = await query.order('created_at', { ascending: false });
     
-    if (error) throw error;
-    return data;
+    // For mock client, result might be a query object, so we need to handle it
+    if (result && typeof result.then === 'function') {
+      const { data, error } = await result;
+      if (error) throw error;
+      return data || [];
+    } else if (result && result.data !== undefined) {
+      if (result.error) throw result.error;
+      return result.data || [];
+    } else {
+      // Mock client fallback
+      return [];
+    }
   } catch (error) {
     logger.error('Error getting disasters:', error);
     throw error;

@@ -112,6 +112,14 @@ router.get('/:disasterId',
       // Apply pagination
       const paginatedResources = (filteredResources || []).slice(offset, offset + parseInt(limit));
 
+      // Broadcast WebSocket event for resource updates
+      const io = req.app.get('io');
+      io.emit('resources_updated', { 
+        disasterId, 
+        resources: paginatedResources,
+        timestamp: new Date().toISOString()
+      });
+
       res.json({
         disaster_id: disasterId,
         resources: paginatedResources,
