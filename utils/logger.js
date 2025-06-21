@@ -1,16 +1,4 @@
 const winston = require('winston');
-const fs = require('fs');
-const path = require('path');
-
-// Ensure logs directory exists
-const logsDir = path.join(__dirname, '..', 'logs');
-if (!fs.existsSync(logsDir)) {
-  try {
-    fs.mkdirSync(logsDir, { recursive: true });
-  } catch (error) {
-    console.warn('Could not create logs directory:', error.message);
-  }
-}
 
 // Define log format
 const logFormat = winston.format.combine(
@@ -24,27 +12,13 @@ const logFormat = winston.format.combine(
 // Create transports array
 const transports = [];
 
-// Add file transports only if logs directory is writable
-try {
-  if (fs.existsSync(logsDir) && fs.statSync(logsDir).isDirectory()) {
-    transports.push(
-      new winston.transports.File({ filename: path.join(logsDir, 'error.log'), level: 'error' }),
-      new winston.transports.File({ filename: path.join(logsDir, 'combined.log') })
-    );
-  }
-} catch (error) {
-  console.warn('Could not set up file logging:', error.message);
-}
-
-// Always add console transport for development
-if (process.env.NODE_ENV !== 'production') {
-  transports.push(new winston.transports.Console({
-    format: winston.format.combine(
-      winston.format.colorize(),
-      winston.format.simple()
-    )
-  }));
-}
+// Add console transport for all environments (including production for Vercel)
+transports.push(new winston.transports.Console({
+  format: winston.format.combine(
+    winston.format.colorize(),
+    winston.format.simple()
+  )
+}));
 
 // Create logger instance
 const logger = winston.createLogger({

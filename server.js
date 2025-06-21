@@ -144,10 +144,13 @@ app.use((req, res) => {
   res.status(404).json({ error: 'Route not found' });
 });
 
-server.listen(PORT, () => {
-  logger.info(`🚀 Disaster Response Platform server running on port ${PORT}`);
-  logger.info(`📡 WebSocket server ready for real-time updates`);
-  logger.info(`🌍 Environment: ${process.env.NODE_ENV}`);
-});
+// Only start server if not in Vercel serverless environment
+if (process.env.VERCEL !== '1') {
+  server.listen(PORT, () => {
+    logger.info(`🚀 Disaster Response Platform server running on port ${PORT}`);
+    logger.info(`📡 WebSocket server ready for real-time updates`);
+    logger.info(`🌍 Environment: ${process.env.NODE_ENV}`);
+  });
+}
 
 module.exports = { app, server, io }; 

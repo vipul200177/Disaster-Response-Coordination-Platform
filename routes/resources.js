@@ -124,10 +124,10 @@ router.get('/:disasterId',
         disaster_id: disasterId,
         resources: paginatedResources,
         pagination: {
-          total: filteredResources.length,
+          total: (filteredResources || []).length,
           limit: parseInt(limit),
           offset: parseInt(offset),
-          has_more: offset + parseInt(limit) < filteredResources.length
+          has_more: offset + parseInt(limit) < (filteredResources || []).length
         },
         type_filter: type || 'all'
       });
