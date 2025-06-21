@@ -6,9 +6,9 @@ Your Disaster Response Platform has been successfully deployed to Vercel!
 
 ## 🌐 **Live Application URLs:**
 
-- **Production URL**: https://disaster-response-platform-ds3f76xcs-vipuls-projects-692b1a11.vercel.app
+- **Production URL**: https://disaster-response-platform-4qxn8mv8k-vipuls-projects-692b1a11.vercel.app
 - **Vercel Dashboard**: https://vercel.com/vipuls-projects-692b1a11/disaster-response-platform
-- **Inspect URL**: https://vercel.com/vipuls-projects-692b1a11/disaster-response-platform/CS8njcmL6yHKVRDsnUru8CZcUwKC
+- **GitHub Repository**: https://github.com/vipul200177/Disaster-Response-Coordination-Platform.git
 
 ## 🚀 **What's Deployed:**
 
@@ -61,7 +61,7 @@ Your Disaster Response Platform has been successfully deployed to Vercel!
 
 ## 🎯 **How to Access:**
 
-1. **Visit the live URL**: https://disaster-response-platform-ds3f76xcs-vipuls-projects-692b1a11.vercel.app
+1. **Visit the live URL**: https://disaster-response-platform-4qxn8mv8k-vipuls-projects-692b1a11.vercel.app
 2. **Use test credentials**:
    - Username: `netrunnerX` (Admin)
    - Username: `fieldWorker` (Contributor)
@@ -94,7 +94,7 @@ disaster-response-platform/
 ## 🚀 **Deployment Details:**
 
 - **Platform**: Vercel
-- **Build Time**: ~4 seconds
+- **Build Time**: ~3 seconds
 - **Status**: Production ready
 - **Environment**: Production mode
 - **Node Version**: 18.x

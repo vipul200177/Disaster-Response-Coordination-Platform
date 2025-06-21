@@ -15,7 +15,7 @@ I am submitting my Disaster Response Coordination Platform assignment for the ME
 
 ## 🌐 **Live Application**
 
-**Production URL**: https://disaster-response-platform-ds3f76xcs-vipuls-projects-692b1a11.vercel.app
+**Production URL**: https://disaster-response-platform-4qxn8mv8k-vipuls-projects-692b1a11.vercel.app
 
 ## 📁 **Source Code**
 
@@ -57,7 +57,7 @@ I am submitting my Disaster Response Coordination Platform assignment for the ME
 
 ## 🧪 **Testing Instructions**
 
-1. Visit the live URL: https://disaster-response-platform-ds3f76xcs-vipuls-projects-692b1a11.vercel.app
+1. Visit the live URL: https://disaster-response-platform-4qxn8mv8k-vipuls-projects-692b1a11.vercel.app
 2. Login with test credentials (any password works)
 3. Explore the disaster dashboard, resource management, and social media features
 4. Test real-time updates and interactive features
