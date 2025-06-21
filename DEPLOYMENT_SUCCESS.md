@@ -79,6 +79,7 @@ Your Disaster Response Platform has been successfully deployed to Vercel!
 ```
 disaster-response-platform/
 ├── server.js                 # Main server file
+├── api/index.js             # Vercel serverless entry point
 ├── package.json             # Backend dependencies
 ├── vercel.json             # Vercel configuration
 ├── client/                 # React frontend
@@ -101,6 +102,26 @@ disaster-response-platform/
 - **Build Command**: Automatic (Vercel detected)
 - **Output Directory**: Auto-detected
 
+## 🔧 **Recent Fixes Applied:**
+
+### ✅ **Vercel Serverless Function Issues:**
+- Created proper serverless entry point (`api/index.js`)
+- Fixed logger to work in serverless environment
+- Improved error handling for production deployment
+- Fixed mock Supabase client compatibility
+
+### ✅ **Local Development Issues:**
+- Fixed logger import errors
+- Resolved port conflicts
+- Improved mock data handling
+- Enhanced error recovery
+
+### ✅ **API Endpoint Fixes:**
+- Fixed resources route pagination
+- Improved disaster data retrieval
+- Enhanced WebSocket connections
+- Better error responses
+
 ## 🎉 **Success Metrics:**
 
 - ✅ **Deployment**: Successful
@@ -117,6 +138,23 @@ If you need to make changes or have questions:
 1. The code is in your local directory
 2. Push changes to GitHub to trigger automatic redeployment
 3. All configuration files are ready for production
+
+## 🚨 **Troubleshooting:**
+
+### **If you see a 500 error:**
+1. Check Vercel deployment logs
+2. Ensure all environment variables are set
+3. Verify the API endpoints are working
+
+### **If you see a 404 error:**
+1. The frontend build might be missing
+2. Check if the React app is built properly
+3. Verify the Vercel configuration
+
+### **Local Development:**
+1. Kill any existing processes on port 5000: `taskkill /PID <PID> /F`
+2. Start the server: `npm start`
+3. Test the API: `curl http://localhost:5000/api/health`
 
 ---
 
