@@ -11,22 +11,99 @@ const initializeSupabase = () => {
       logger.warn('To use real Supabase, set SUPABASE_URL and SUPABASE_ANON_KEY in your .env file');
       
       // Create a comprehensive mock client as fallback
-      const createMockQuery = () => ({
-        eq: () => createMockQuery(),
-        contains: () => createMockQuery(),
-        order: () => createMockQuery(),
-        single: () => ({ data: null, error: null }),
-        select: () => createMockQuery(),
-        insert: () => createMockQuery(),
-        update: () => createMockQuery(),
-        delete: () => createMockQuery(),
-        upsert: () => ({ error: null }),
-        rpc: () => ({ data: [], error: null })
-      });
+      const createMockQuery = (tableName = 'disasters') => {
+        const mockData = {
+          disasters: [
+            {
+              id: 'mock-disaster-1',
+              title: 'Mock Earthquake Response',
+              description: 'Test disaster for development',
+              location: { lat: 40.7128, lng: -74.0060 },
+              severity: 'high',
+              status: 'active',
+              created_at: new Date().toISOString(),
+              tags: ['earthquake', 'emergency'],
+              owner_id: 'netrunnerX'
+            }
+          ],
+          resources: [
+            {
+              id: 'mock-resource-1',
+              name: 'Emergency Shelter',
+              type: 'shelter',
+              location: { lat: 40.7128, lng: -74.0060 },
+              capacity: 100,
+              disaster_id: 'mock-disaster-1',
+              location_name: 'Downtown Shelter'
+            },
+            {
+              id: 'mock-resource-2',
+              name: 'Medical Supplies',
+              type: 'medical',
+              location: { lat: 40.7128, lng: -74.0060 },
+              capacity: 50,
+              disaster_id: 'mock-disaster-1',
+              location_name: 'Central Medical Center'
+            }
+          ],
+          reports: [
+            {
+              id: 'mock-report-1',
+              title: 'Damage Assessment',
+              content: 'Building damage reported in downtown area',
+              disaster_id: 'mock-disaster-1',
+              verification_status: 'pending'
+            }
+          ]
+        };
+
+        let currentFilters = {};
+
+        return {
+          eq: (field, value) => {
+            currentFilters[field] = value;
+            return createMockQuery(tableName);
+          },
+          contains: (field, value) => {
+            currentFilters[field] = value;
+            return createMockQuery(tableName);
+          },
+          order: (field, options = {}) => {
+            // Return a promise that resolves to filtered mock data
+            let data = mockData[tableName] || [];
+            
+            // Apply filters
+            if (currentFilters.disaster_id) {
+              data = data.filter(item => item.disaster_id === currentFilters.disaster_id);
+            }
+            if (currentFilters.owner_id) {
+              data = data.filter(item => item.owner_id === currentFilters.owner_id);
+            }
+            
+            return Promise.resolve({ 
+              data: data, 
+              error: null 
+            });
+          },
+          single: () => {
+            let data = mockData[tableName] || [];
+            if (currentFilters.disaster_id) {
+              data = data.filter(item => item.disaster_id === currentFilters.disaster_id);
+            }
+            return Promise.resolve({ data: data[0] || null, error: null });
+          },
+          select: (fields = '*') => createMockQuery(tableName),
+          insert: (data) => Promise.resolve({ data: data, error: null }),
+          update: (data) => Promise.resolve({ data: data, error: null }),
+          delete: () => Promise.resolve({ error: null }),
+          upsert: (data) => Promise.resolve({ data: data, error: null }),
+          rpc: (func, params) => Promise.resolve({ data: [], error: null })
+        };
+      };
 
       supabase = {
-        from: () => createMockQuery(),
-        rpc: () => ({ data: [], error: null }),
+        from: (table) => createMockQuery(table),
+        rpc: (func, params) => Promise.resolve({ data: [], error: null }),
         sql: (template) => template
       };
       
@@ -44,22 +121,99 @@ const initializeSupabase = () => {
     logger.warn('Falling back to mock mode for testing');
     
     // Create a comprehensive mock client as fallback
-    const createMockQuery = () => ({
-      eq: () => createMockQuery(),
-      contains: () => createMockQuery(),
-      order: () => createMockQuery(),
-      single: () => ({ data: null, error: null }),
-      select: () => createMockQuery(),
-      insert: () => createMockQuery(),
-      update: () => createMockQuery(),
-      delete: () => createMockQuery(),
-      upsert: () => ({ error: null }),
-      rpc: () => ({ data: [], error: null })
-    });
+    const createMockQuery = (tableName = 'disasters') => {
+      const mockData = {
+        disasters: [
+          {
+            id: 'mock-disaster-1',
+            title: 'Mock Earthquake Response',
+            description: 'Test disaster for development',
+            location: { lat: 40.7128, lng: -74.0060 },
+            severity: 'high',
+            status: 'active',
+            created_at: new Date().toISOString(),
+            tags: ['earthquake', 'emergency'],
+            owner_id: 'netrunnerX'
+          }
+        ],
+        resources: [
+          {
+            id: 'mock-resource-1',
+            name: 'Emergency Shelter',
+            type: 'shelter',
+            location: { lat: 40.7128, lng: -74.0060 },
+            capacity: 100,
+            disaster_id: 'mock-disaster-1',
+            location_name: 'Downtown Shelter'
+          },
+          {
+            id: 'mock-resource-2',
+            name: 'Medical Supplies',
+            type: 'medical',
+            location: { lat: 40.7128, lng: -74.0060 },
+            capacity: 50,
+            disaster_id: 'mock-disaster-1',
+            location_name: 'Central Medical Center'
+          }
+        ],
+        reports: [
+          {
+            id: 'mock-report-1',
+            title: 'Damage Assessment',
+            content: 'Building damage reported in downtown area',
+            disaster_id: 'mock-disaster-1',
+            verification_status: 'pending'
+          }
+        ]
+      };
+
+      let currentFilters = {};
+
+      return {
+        eq: (field, value) => {
+          currentFilters[field] = value;
+          return createMockQuery(tableName);
+        },
+        contains: (field, value) => {
+          currentFilters[field] = value;
+          return createMockQuery(tableName);
+        },
+        order: (field, options = {}) => {
+          // Return a promise that resolves to filtered mock data
+          let data = mockData[tableName] || [];
+          
+          // Apply filters
+          if (currentFilters.disaster_id) {
+            data = data.filter(item => item.disaster_id === currentFilters.disaster_id);
+          }
+          if (currentFilters.owner_id) {
+            data = data.filter(item => item.owner_id === currentFilters.owner_id);
+          }
+          
+          return Promise.resolve({ 
+            data: data, 
+            error: null 
+          });
+        },
+        single: () => {
+          let data = mockData[tableName] || [];
+          if (currentFilters.disaster_id) {
+            data = data.filter(item => item.disaster_id === currentFilters.disaster_id);
+          }
+          return Promise.resolve({ data: data[0] || null, error: null });
+        },
+        select: (fields = '*') => createMockQuery(tableName),
+        insert: (data) => Promise.resolve({ data: data, error: null }),
+        update: (data) => Promise.resolve({ data: data, error: null }),
+        delete: () => Promise.resolve({ error: null }),
+        upsert: (data) => Promise.resolve({ data: data, error: null }),
+        rpc: (func, params) => Promise.resolve({ data: [], error: null })
+      };
+    };
 
     supabase = {
-      from: () => createMockQuery(),
-      rpc: () => ({ data: [], error: null }),
+      from: (table) => createMockQuery(table),
+      rpc: (func, params) => Promise.resolve({ data: [], error: null }),
       sql: (template) => template
     };
   }
@@ -159,7 +313,7 @@ const getDisasters = async (filters = {}) => {
     // Handle both real and mock clients
     const result = await query.order('created_at', { ascending: false });
     
-    // For mock client, result might be a query object, so we need to handle it
+    // For mock client, result is already a promise that resolves to { data, error }
     if (result && typeof result.then === 'function') {
       const { data, error } = await result;
       if (error) throw error;
@@ -269,7 +423,7 @@ const getResourcesByDisaster = async (disasterId) => {
       .eq('disaster_id', disasterId);
 
     if (error) throw error;
-    return data;
+    return data || [];
   } catch (error) {
     logger.error('Error getting resources by disaster:', error);
     throw error;

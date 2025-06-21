@@ -33,6 +33,9 @@ const PORT = process.env.PORT || 5000;
 // Initialize Supabase
 initializeSupabase();
 
+// Trust proxy for rate limiting (fixes X-Forwarded-For warning)
+app.set('trust proxy', 1);
+
 // Middleware
 app.use(helmet());
 app.use(cors({
@@ -55,8 +58,16 @@ app.use(limiter);
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-// Static files
-app.use(express.static(path.join(__dirname, 'client/build')));
+// Check if build directory exists before serving static files
+const buildPath = path.join(__dirname, 'client/build');
+const indexPath = path.join(buildPath, 'index.html');
+
+if (require('fs').existsSync(buildPath)) {
+  app.use(express.static(buildPath));
+  logger.info('Static files directory found, serving React app');
+} else {
+  logger.warn('Build directory not found. Run "npm run build" in the client directory to build the React app');
+}
 
 // Routes
 app.use('/api/disasters', disasterRoutes);
@@ -75,9 +86,26 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-// Serve React app for any non-API routes
+// Serve React app for any non-API routes (only if build exists)
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
+  if (require('fs').existsSync(indexPath)) {
+    res.sendFile(indexPath);
+  } else {
+    res.status(404).json({ 
+      error: 'Frontend not built', 
+      message: 'Please run "npm run build" in the client directory to build the React app',
+      apiAvailable: true,
+      endpoints: [
+        '/api/health',
+        '/api/disasters',
+        '/api/social-media',
+        '/api/resources',
+        '/api/updates',
+        '/api/verification',
+        '/api/geocoding'
+      ]
+    });
+  }
 });
 
 // Socket.IO connection handling
